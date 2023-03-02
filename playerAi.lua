@@ -29,20 +29,20 @@ function pai:think(self, dt)
             print(#self.memory)
             if #self.memory > self.risk then
                 self.choice = "spin"
-                broadcast.newBroadcast("Player " .. curTurn .. " spun the chamber " .. (self.dead and "and died" or ""), 400, 300, {255, 255, 255})
+                bulletChamber = love.math.random(1, gunChamberMax)
+                if curChamber == bulletChamber then
+                    -- player dies
+                    self.dead = true
+                    bulletChamber = love.math.random(1, gunChamberMax)
+                end
+                broadcast.newBroadcast("Player " .. curTurn .. " spun the chamber" .. (not self.died and " and shot" or ", shot, and died"), 400, 300, {255, 255, 255})
             else
                 self.choice = "shoot"
                 -- Did player die?
                 if curChamber == bulletChamber then
                     -- player dies
                     self.dead = true
-                else
-                    -- player lives
-                    curTurn = 1
-                    curChamber = curChamber + 1
-                    if curChamber > gunChamberMax then
-                        curChamber = 1
-                    end
+                    bulletChamber = love.math.random(1, gunChamberMax)
                 end
                 broadcast.newBroadcast("Player " .. curTurn .. " shot the gun " .. (self.dead and "and died" or ""), 400, 300, {255, 255, 255})
                 
@@ -50,6 +50,9 @@ function pai:think(self, dt)
 
             self.thought = true
         end
+    else
+        self.choice = "spin"
+        self.thought = true
     end
 end
 
