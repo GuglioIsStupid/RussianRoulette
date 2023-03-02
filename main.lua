@@ -12,11 +12,19 @@ function love.load()
     playerAi = {}
 
     broadcast = require("broadcast") -- load broadcast
+    playerAIBackend = require("playerAi") -- load player ai
 
     for i = 1, playerCount do
-        playerAi[i] = require("playerAi") -- load player ai
+        playerAi[i] = playerAIBackend.new()
     end
     dead = false
+end
+
+function love.math.random(min, max)
+    -- set a random math seed
+    math.randomseed(math.random(1, 1000000))
+
+    return math.random(min, max)
 end
 
 function love.update(dt)
